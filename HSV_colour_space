@@ -1,0 +1,25 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow
+
+# Read the image
+img = cv2.imread('/content/drive/My Drive/Colab Notebooks/Beyonce_reaction.jpg')
+
+# Convert the image to HSV color space
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+# Define the range for blue color in HSV
+lower_blue = np.array([100, 150, 0])  # Lower bound for blue
+upper_blue = np.array([140, 255, 255])  # Upper bound for blue
+
+# Threshold the image to isolate the blue color
+mask = cv2.inRange(hsv, lower_blue, upper_blue)
+
+# Apply the mask to the original image to get the blue objects
+result = cv2.bitwise_and(img, img, mask=mask)
+
+# Save the result image
+cv2.imwrite('/content/drive/My Drive/Colab Notebooks/blue_isolated.jpg', result)
+
+# Optionally, display the result
+cv2_imshow(result)  # Show the isolated blue objects
