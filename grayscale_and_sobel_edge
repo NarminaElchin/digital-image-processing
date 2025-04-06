@@ -1,0 +1,36 @@
+from PIL import Image
+
+# Load the WebP image
+img = Image.open('/content/drive/MyDrive/Colab Notebooks/Beyonce_reaction.jpg')
+
+# Save as JPG
+img.convert('RGB').save('/content/drive/MyDrive/Colab Notebooks/Beyonce_reaction.jpg', 'JPEG')
+
+print("Format:", img.format)
+
+import os
+import cv2
+import numpy as np
+from google.colab import drive
+from google.colab.patches import cv2_imshow
+
+# Mount Google Drive
+drive.mount('/content/drive')
+
+# Read the image from Drive
+img = cv2.imread('/content/drive/My Drive/Colab Notebooks/Beyonce_reaction.jpg')
+
+# # Check the file exists in the specified folder
+# print(os.path.exists('/content/drive/MyDrive/Colab Notebooks/Beyonce_reaction.jpg'))
+
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+
+edges = cv2.magnitude(sobelx, sobely)
+edges = cv2.convertScaleAbs(edges)
+
+cv2.imwrite("sobel_edges.jpg", edges)
+
+cv2_imshow(edges)
