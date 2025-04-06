@@ -1,0 +1,29 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow
+
+# Read the image
+img = cv2.imread('/content/drive/My Drive/Colab Notebooks/Beyonce_reaction.jpg')
+
+# Get the dimensions of the image
+(h, w) = img.shape[:2]
+
+# Resize the image to half of its original dimensions
+resized = cv2.resize(img, (w // 2, h // 2))
+
+# Get the center of the image for rotation
+center = (w // 2, h // 2)
+
+# Get the rotation matrix for rotating 45 degrees around the center
+M = cv2.getRotationMatrix2D(center, 45, 1.0)
+
+# Apply the rotation using the matrix M
+rotated = cv2.warpAffine(img, M, (w, h))
+
+# Save the resized and rotated images
+cv2.imwrite('/content/drive/My Drive/Colab Notebooks/resized.jpg', resized)
+cv2.imwrite('/content/drive/My Drive/Colab Notebooks/rotated.jpg', rotated)
+
+# Optionally, display the images in Colab
+cv2_imshow(resized)  # Display resized image
+cv2_imshow(rotated)  # Display rotated image
