@@ -1,0 +1,24 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow
+
+# Read the image from Drive
+img = cv2.imread('/content/drive/My Drive/Colab Notebooks/Beyonce_reaction.jpg')
+
+# Convert the image to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Apply Gaussian Blur
+gauss_blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+# Apply Median Blur
+median_blur = cv2.medianBlur(gray, 5)
+
+# Combine both blurred images side by side
+combined = np.hstack((gauss_blur, median_blur))
+
+# Save the result
+cv2.imwrite('/content/drive/My Drive/Colab Notebooks/blur_comparison.jpg', combined)
+
+# Display the comparison image
+cv2_imshow(combined)
