@@ -1,0 +1,55 @@
+import random
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow  # Import cv2_imshow for Colab
+
+# Read the image in grayscale
+img = cv2.imread('/content/drive/My Drive/Colab Notebooks/Beyonce_reaction.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Check if the image was loaded successfully
+if img is None:
+    raise FileNotFoundError("Image not found or unable to load.")
+
+# Create a copy of the image to add noise
+noisy = img.copy()
+
+# Get the shape of the image
+rows, cols = noisy.shape
+
+# Add salt noise (random white pixels)
+for i in range(500):  # Add salt
+    x = random.randint(0, rows - 1)
+    y = random.randint(0, cols - 1)
+    noisy[x, y] = 255  # White pixel (salt)
+
+# Add pepper noise (random black pixels)
+for i in range(500):  # Add pepper
+    x = random.randint(0, rows - 1)
+    y = random.randint(0, cols - 1)
+    noisy[x, y] = 0  # Black pixel (pepper)
+
+# Apply median filtering to remove the noise
+filtered = cv2.medianBlur(noisy, 3)  # 3x3 kernel for median filter
+
+# Perform edge detection using Sobel
+sobel = cv2.Sobel(filtered, cv2.CV_64F, 1, 1, ksize=3)  # Sobel on filtered image
+sobel = cv2.convertScaleAbs(sobel)  # Convert to 8-bit image
+
+# Perform edge detection using Canny
+canny = cv2.Canny(filtered, 100, 200)  # Canny on filtered image
+
+# Stack Sobel and Canny horizontally for comparison
+comparison = np.hstack((sobel, canny))
+
+# Save the noisy, filtered, and comparison images
+cv2.imwrite("noisy_image.jpg", noisy)
+cv2.imwrite("denoised_image.jpg", filtered)
+cv2.imwrite("sobel_vs_canny.jpg", comparison)
+
+# Optionally, display the images in Colab
+cv2_imshow(img)        # Display original image
+cv2_imshow(noisy)      # Display noisy image
+cv2_imshow(filtered)   # Display filtered image
+cv2_imshow(sobel)      # Display Sobel edge detection
+cv2_imshow(canny)      # Display Canny edge detection
+cv2_imshow(comparison) # Display Sobel vs Canny comparison
